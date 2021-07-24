@@ -29,7 +29,8 @@ $globalcachefilename=$cachedir.'/_'.$texthash.'.png';
 
 if(file_exists($globalcachefilename)) {
 	header('Content-Type: image/png');
-	touch($globalcachefilename);
+	header('Cache-Control: public, max-age=2419200');
+	header('X-Content-Type-Options: nosniff');
 	readfile($globalcachefilename);
 } else {
 	$charwidthtable=array(
@@ -708,6 +709,8 @@ if(file_exists($globalcachefilename)) {
 	// Output final image.
 	
 	header('Content-Type: image/png');
+	header('Cache-Control: public, max-age=2419200');
+	header('X-Content-Type-Options: nosniff');
 	readfile($globalcachefilename);
 }
 ?>
