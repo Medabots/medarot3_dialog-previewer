@@ -395,14 +395,21 @@ if(!file_exists($globalcachefilename)) {
 	$canvaswidth=160;
 	$canvasheight=72*$numpages;
 	
-	// Check cache.
+	// Check cache if 3 pages or less.
 	
-	$canvascachefilename=$cachedir.'/w'.$canvascachefilename.'.png';
-	if(file_exists($canvascachefilename)) {
+	$hascache=false;
+	$canvascachefilenamefull='';
+	if(strlen($canvascachefilename)<=3) {
+		$canvascachefilenamefull=$cachedir.'/w'.$canvascachefilename.'.png';
+		if(file_exists($canvascachefilenamefull)) {
+			$hascache=true;
+		}
+	}
+	if($hascache) {
 		
 		// Load all windows without text or portraits from the cache.
 		
-		$im=imagecreatefrompng($canvascachefilename);
+		$im=imagecreatefrompng($canvascachefilenamefull);
 		imagealphablending($im,true);
 		
 	} else {
@@ -467,10 +474,12 @@ if(!file_exists($globalcachefilename)) {
 		imagedestroy($windowim);
 		imagedestroy($indicatorim);
 		
-		// Save everything drawn up to now into the cache.
+		// Save everything drawn up to now into the cache if 3 pages or less.
 		
 		imagesavealpha($im,true);
-		imagepng($im,$canvascachefilename,7);
+		if(!empty($canvascachefilenamefull)) {
+			imagepng($im,$canvascachefilenamefull,7);
+		}
 	}
 	
 	// Load required fonts and make font background transparent.
