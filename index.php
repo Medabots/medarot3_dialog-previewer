@@ -27,11 +27,7 @@ if(strlen($texthash)>64) {
 
 $globalcachefilename=$cachedir.'/_'.$texthash.'.png';
 
-if(file_exists($globalcachefilename)) {
-	header('Content-Type: image/png');
-	touch($globalcachefilename);
-	readfile($globalcachefilename);
-} else {
+if(!file_exists($globalcachefilename)) {
 	$charwidthtable=array(
 		array(
 			2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
@@ -704,10 +700,12 @@ if(file_exists($globalcachefilename)) {
 	imagecolortransparent($im,imagecolorat($im,50,0));
 	imagepng($im,$globalcachefilename,7);
 	imagedestroy($im);
-	
-	// Output final image.
-	
-	header('Content-Type: image/png');
-	readfile($globalcachefilename);
 }
+	
+// Output final image.
+	
+header('Content-Type: image/png');
+header('Cache-Control: public, max-age=2419200');
+header('X-Content-Type-Options: nosniff');
+readfile($globalcachefilename);
 ?>
