@@ -136,7 +136,6 @@ if(!file_exists($globalcachefilename)) {
 	);
 	$numberoffonts=5;
 	
-	
 	// Disregard everything after an end code.
 	
 	$text=preg_replace('/\<\*[0-9A-Fa-f][0-9A-Fa-f]\>/','<*00>',$text);
@@ -170,6 +169,7 @@ if(!file_exists($globalcachefilename)) {
 		$pos=strpos($text,'<',$i);
 		$newpage=false;
 		$endline=false;
+		$discardcode=false;
 		$indicator=false;
 		if(!is_bool($pos)) {
 			$replacecodemaybe=substr($text,$pos,4);
@@ -182,9 +182,16 @@ if(!file_exists($globalcachefilename)) {
 						$newpage=true;
 					}
 					break;
+				case '<D1>':
+					if($currentline<1&&$i-$linestart==0) {
+						$discardcode=true;
+					} else {
+						$newpage=true;
+						$endline=true;
+					}
+					break;
 				case '<CF>':
 					$indicator=true;
-				case '<D1>':
 					$newpage=true;
 				case '<CD>':
 					$endline=true;
@@ -196,7 +203,7 @@ if(!file_exists($globalcachefilename)) {
 		}
 		if($endline) {
 			if($currentline<2) {
-				$pages[$currentpage][$currentline]=substr($text,$linestart,$pos-$linestart);
+				$pages[$currentpage][$currentline]=str_replace('<D1>','',substr($text,$linestart,$pos-$linestart));
 				$linelengthsbypage[$currentpage][$currentline]=0;
 				$currentline++;
 			} else {
@@ -222,6 +229,8 @@ if(!file_exists($globalcachefilename)) {
 			}
 			$i=$pos+4;
 			$linestart=$i;
+		} else if($discardcode) {
+			$i=$pos+4;
 		} else {
 			$i=$pos+1;
 		}
@@ -265,6 +274,12 @@ if(!file_exists($globalcachefilename)) {
 			$yen=chr(0xC2).chr(0xA5);
 			$yenfinal=chr(0x1F);
 			$linetext=str_replace($yen,$yenfinal,$linetext);
+			
+			// Re-encode heart character.
+			
+			$heart=chr(0xE2).chr(0x99).chr(0xA5);
+			$heartfinal=chr(0x7F);
+			$linetext=str_replace($heart,$heartfinal,$linetext);
 			
 			// Convert any remaining UTF8 characters to ?.
 			
@@ -714,7 +729,6 @@ if(!file_exists($globalcachefilename)) {
 // Output final image.
 	
 header('Content-Type: image/png');
-header('Cache-Control: public, max-age=2419200');
 header('X-Content-Type-Options: nosniff');
 readfile($globalcachefilename);
 ?>
