@@ -1,4 +1,6 @@
 <?php
+include(dirname(__FILE__).'/functions.php');
+
 $text='';
 if(isset($_REQUEST['t'])) {
 	$text=$_REQUEST['t'].'';
@@ -28,113 +30,16 @@ if(strlen($texthash)>64) {
 $globalcachefilename=$cachedir.'/_'.$texthash.'.png';
 
 if(!file_exists($globalcachefilename)) {
-	$charwidthtable=array(
-		array(
-			2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			2, 1, 3, 5, 4, 5, 5, 2, 2, 2, 3, 5, 2, 4, 1, 4,
-			4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 4, 4, 4, 5,
-			5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-			5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 4, 2, 3, 4,
-			2, 5, 4, 4, 4, 4, 4, 4, 4, 1, 2, 4, 1, 5, 4, 4,
-			4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 3, 1, 3, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
-		),
-		array(
-			2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 5,
-			2, 1, 3, 5, 4, 5, 5, 2, 2, 2, 3, 5, 2, 4, 1, 4,
-			4, 2, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 4, 4, 4, 4,
-			5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 5, 4, 4,
-			4, 4, 4, 4, 5, 4, 5, 5, 5, 5, 4, 2, 4, 2, 3, 4,
-			2, 3, 3, 3, 3, 3, 2, 3, 3, 1, 2, 3, 1, 5, 3, 3,
-			3, 3, 3, 3, 3, 3, 4, 5, 4, 3, 3, 3, 1, 3, 6, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
-		),
-		array(
-			2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			2, 2, 3, 5, 5, 5, 6, 2, 3, 3, 3, 5, 2, 4, 1, 4,
-			5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 2, 4, 4, 4, 6,
-			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 3, 4, 3, 3, 4,
-			2, 6, 5, 5, 5, 5, 4, 5, 5, 2, 3, 5, 2, 6, 5, 5,
-			5, 5, 5, 5, 5, 5, 5, 6, 6, 5, 4, 4, 2, 4, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
-		),
-		array(
-			2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			2, 1, 3, 5, 4, 5, 5, 1, 2, 2, 3, 5, 2, 4, 1, 4,
-			4, 2, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 4, 4, 4, 5,
-			5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-			5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 4, 2, 3, 4,
-			2, 4, 4, 4, 4, 4, 4, 4, 4, 1, 2, 4, 1, 5, 4, 4,
-			4, 4, 4, 4, 4, 4, 4, 5, 5, 4, 4, 3, 1, 3, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
-		),
-		array(
-			2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			2, 2, 3, 5, 5, 5, 6, 1, 3, 3, 3, 5, 2, 4, 1, 4,
-			5, 3, 5, 5, 5, 5, 5, 5, 5, 5, 1, 2, 4, 4, 4, 6,
-			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 3, 4, 3, 3, 4,
-			2, 5, 5, 5, 5, 5, 5, 5, 5, 2, 3, 5, 2, 6, 5, 5,
-			5, 5, 5, 5, 5, 5, 5, 6, 6, 5, 5, 4, 2, 4, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-			7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
-		)
-	);
-	$fonts=array(
-		false,
-		false,
-		false,
-		false,
-		false
-	);
-	$fontsloaded=array(
-		false,
-		false,
-		false,
-		false,
-		false
-	);
-	$numberoffonts=5;
+	$charwidthtable=get_char_width_table();
+	$fonts=array();
+	$fontsloaded=array();
+	$numberoffonts=num_vwf_fonts();
+	$i=0;
+	while($i<$numberoffonts) {
+		$fonts[$i]=false;
+		$fontsloaded[$i]=false;
+		$i++;
+	}
 	
 	// Disregard everything after an end code.
 	
@@ -262,24 +167,10 @@ if(!file_exists($globalcachefilename)) {
 			// Remove speed control code.
 			
 			$linetext=preg_replace('/\<S[0-9A-Fa-f][0-9A-Fa-f]\>/','',$linetext);
+	
+			// Re-encode special characters.
 			
-			// Re-encode note character.
-			
-			$note=chr(0xF0).chr(0x9D).chr(0x85).chr(0xA0);
-			$notefinal=chr(0x1E);
-			$linetext=str_replace($note,$notefinal,$linetext);
-			
-			// Re-encode yen character.
-			
-			$yen=chr(0xC2).chr(0xA5);
-			$yenfinal=chr(0x1F);
-			$linetext=str_replace($yen,$yenfinal,$linetext);
-			
-			// Re-encode heart character.
-			
-			$heart=chr(0xE2).chr(0x99).chr(0xA5);
-			$heartfinal=chr(0x7F);
-			$linetext=str_replace($heart,$heartfinal,$linetext);
+			$linetext=reenc_special_chars($linetext);
 			
 			// Convert any remaining UTF8 characters to ?.
 			
@@ -503,35 +394,7 @@ if(!file_exists($globalcachefilename)) {
 	
 	foreach($fontsloaded as $fontnum => $fontsloadedtest) {
 		if($fontsloadedtest) {
-			$fontcachefilename=$cachedir.'/f'.$fontnum.'.png';
-			if(file_exists($fontcachefilename)) {
-				$fonts[$fontnum]=imagecreatefrompng($fontcachefilename);
-				imagealphablending($fonts[$fontnum],true);
-			} else {
-				$fonts[$fontnum]=imagecreatefrompng($basedir.'/fonts/'.$fontnum.'.png');
-				$transparent=imagecolorallocatealpha($fonts[$fontnum],0,0,0,127);
-				$width=128;
-				$height=64;
-				imagealphablending($fonts[$fontnum],false);
-				$x=0;
-				while($x<$width) {
-					$y=0;
-					while($y<$height) {
-						$rgb = imagecolorat($fonts[$fontnum],$x,$y);
-						$r = ($rgb >> 16) & 0xFF;
-						$g = ($rgb >> 8) & 0xFF;
-						$b = $rgb & 0xFF;
-						if($r==255&&$g==255&&$b==255) {
-							imagesetpixel($fonts[$fontnum],$x,$y,$transparent);
-						}
-						$y++;
-					}
-					$x++;
-				}
-				imagealphablending($fonts[$fontnum],true);
-				imagesavealpha($fonts[$fontnum],true);
-				imagepng($fonts[$fontnum],$fontcachefilename,7);
-			}
+			$fonts[$fontnum]=load_vwf_font($fontnum,$cachedir,$basedir);
 		}
 	}
 	
