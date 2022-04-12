@@ -115,7 +115,7 @@ if(!file_exists($globalcachefilename)) {
 				$errorbypage[$currentpage][1]=true;
 			}
 			if($newpage) {
-				if($currentpage<10) {
+				if($currentpage<24) {
 					$indicatorsbypage[$currentpage]=$indicator;
 					$currentpage++;
 					$pages[$currentpage]=array('','');
