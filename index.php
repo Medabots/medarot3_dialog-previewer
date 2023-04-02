@@ -220,7 +220,7 @@ if(!file_exists($globalcachefilename)) {
 			$i=0;
 			$c=strlen($linetext);
 			while($i<$c) {
-				list($word,$wordlength,$wordnumbytes,$fontforward)=count_to_next_space($linetext,$charwidthtable,$fontsloaded,$i,$c,$fontforcounting);
+				list($word,$wordlength,$wordnumbytes,$fontforward)=count_to_next_space($linetext,$charwidthtable,$fontsloaded,$i,$c,$fontforcounting,$numberoffonts);
 				if($autolines[$currentautoline][1]>0&&$autolines[$currentautoline][1]+$wordlength>137) {
 					$currentautoline++;
 					$autolines[$currentautoline]=array('',0);

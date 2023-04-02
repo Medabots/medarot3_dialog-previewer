@@ -158,7 +158,7 @@ function reenc_special_chars($linetext) {
 	$linetext=str_replace($heart,$heartfinal,$linetext);
 	return $linetext;
 }
-function count_to_next_space(&$linetext,&$charwidthtable,&$fontsloaded,$baseindex=0,$c=0,$fontforcounting=0) {
+function count_to_next_space(&$linetext,&$charwidthtable,&$fontsloaded,$baseindex=0,$c=0,$fontforcounting=0,$numberoffonts=0) {
 	$i=$baseindex;
 	$word='';
 	$wordlength=0;
