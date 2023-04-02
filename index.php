@@ -47,13 +47,7 @@ if(!file_exists($globalcachefilename)) {
 	$text=explode("<*00>",$text);
 	$text=$text[0];
 	
-	// Parse linebreaks and pagebreaks into pages and lines.
-	
-	$pages=array(array('',''));
-	$indicatorsbypage=array(true);
-	$linelengthsbypage=array(array(0,0));
-	$portraitbypage=array('');
-	$errorbypage=array(array(false,false));
+	// Extract linebreaks and pagebreaks.
 	
 	$text=str_ireplace('<$CD>','<CD>',$text);
 	$text=str_ireplace('<$CF>','<CF>',$text);
@@ -66,77 +60,42 @@ if(!file_exists($globalcachefilename)) {
 	
 	$i=0;
 	$c=strlen($text);
-	$linestart=0;
-	$currentpage=0;
-	$currentline=0;
+	
+	$lines=array(array('',0));
+	$linenumber=0;
 	
 	while($i<$c) {
+		if(!isset($lines[$linenumber])) {
+			$lines[$linenumber]=array('',0);
+		}
 		$pos=strpos($text,'<',$i);
-		$newpage=false;
-		$endline=false;
-		$discardcode=false;
-		$indicator=false;
+		$linebreaktype=0;
 		if(!is_bool($pos)) {
 			$replacecodemaybe=substr($text,$pos,4);
-			$endline=false;
 			switch($replacecodemaybe) {
-				case '<D3>':
-					$endline=true;
-					if($currentline>0) {
-						$indicator=true;
-						$newpage=true;
-					}
+				case '<D3>': // Universal linebreak
+					$linebreaktype=4;
 					break;
-				case '<D1>':
-					if($currentline<1&&$i-$linestart==0) {
-						$discardcode=true;
-					} else {
-						$newpage=true;
-						$endline=true;
-					}
+				case '<D1>': // No-Input Pagebreak
+					$linebreaktype=3;
 					break;
-				case '<CF>':
-					$indicator=true;
-					$newpage=true;
-				case '<CD>':
-					$endline=true;
+				case '<CF>': // Pagebreak
+					$linebreaktype=2;
+					break;
+				case '<CD>': // Newline
+					$linebreaktype=1;
 					break;
 			}
 		} else {
 			$pos=$c;
-			$endline=true;
 		}
-		if($endline) {
-			if($currentline<2) {
-				$pages[$currentpage][$currentline]=str_replace('<D1>','',substr($text,$linestart,$pos-$linestart));
-				$linelengthsbypage[$currentpage][$currentline]=0;
-				$currentline++;
-			} else {
-				$errorbypage[$currentpage][1]=true;
-			}
-			if($newpage) {
-				if($currentpage<24) {
-					$indicatorsbypage[$currentpage]=$indicator;
-					$currentpage++;
-					$pages[$currentpage]=array('','');
-					$linelengthsbypage[$currentpage]=array(0,0);
-					$indicatorsbypage[$currentpage]=true;
-					$portraitbypage[$currentpage]='';
-					$errorbypage[$currentpage]=array(false,false);
-					$currentline=0;
-				} else {
-					
-					// Discard everything after the first 10 pages.
-					
-					$indicatorsbypage[$currentpage]=$indicator;
-					$i=$c;
-				}
-			}
+		if($linebreaktype>0) {
+			$lines[$linenumber][0].=substr($text,$i,$pos-$i);
+			$lines[$linenumber][1]=$linebreaktype;
 			$i=$pos+4;
-			$linestart=$i;
-		} else if($discardcode) {
-			$i=$pos+4;
+			$linenumber++;
 		} else {
+			$lines[$linenumber][0].=substr($text,$i,($pos+1)-$i);
 			$i=$pos+1;
 		}
 	}
@@ -154,11 +113,22 @@ if(!file_exists($globalcachefilename)) {
 	// Parse lines.
 	
 	$canvascachefilename='';
-	$numpages=count($pages);
 	$pagenum=0;
-	while($pagenum<$numpages) {
-		$lines=$pages[$pagenum];
-		foreach($lines as $linenum => $linetext) {
+	$linenum=0;
+	
+	$pages=array(array('',''));
+	$indicatorsbypage=array(false);
+	$linelengthsbypage=array(array(0,0));
+	$portraitbypage=array('');
+	$errorbypage=array(array(false,false));
+	$linestart=0;
+	$currentpage=0;
+	
+	$numlines=count($lines);
+	$currentline=0;
+	while($currentline<$numlines) {
+		if($pagenum<24) {
+			$linetext=$lines[$currentline][0];
 			
 			// Replace ASCII control characters and tabs with ?.
 			
@@ -216,7 +186,7 @@ if(!file_exists($globalcachefilename)) {
 				$pos=intval($matches[0][1],10);
 				$len=strlen($match);
 				$linetext=substr($linetext,0,$pos).substr($linetext,$pos+$len);
-				$portraitbypage[$pagenum]=substr($match,2,-1);
+				$currentportrait=substr($match,2,-1);
 				$matches=array();
 			}
 			
@@ -233,66 +203,122 @@ if(!file_exists($globalcachefilename)) {
 				$linetext=str_replace('<f0'.$i.'>',$placeholder,$linetext);
 				$i++;
 			}
-			
+				
 			// Store modified text.
 			
-			$pages[$pagenum][$linenum]=$linetext;
+			$lines[$currentline][0]=$linetext;
 			
 			// Count text length in pixels and note fonts used.
 			// Strings can be uses as char arrays in php.
 			
-			$linelength=0;
+			$wordlength=0;
+			$wordfont=0;
+			
+			$currentautoline=0;
+			$autolines=array(array('',0));
 			
 			$i=0;
 			$c=strlen($linetext);
 			while($i<$c) {
-				$char=$linetext[$i];
-				$charcode=ord($char);
-				if($charcode<0x80) {
-				
-					// Add to pixel length total.
-					
-					$linelength+=$charwidthtable[$fontforcounting][$charcode]+1;
-					
-				} else {
-					
-					// A font switching single byte placeholder was encountered.
-					// Switch font tables and note that the font file needs to be loaded.
-					
-					$fontforcounting=$charcode-0x80;
-					if($fontforcounting>=$numberoffonts||$fontforcounting<0) {
-						$fontforcounting=0;
-					}
-					$fontsloaded[$fontforcounting]=true;
+				list($word,$wordlength,$wordnumbytes,$fontforward)=count_to_next_space($linetext,$charwidthtable,$fontsloaded,$i,$c,$fontforcounting);
+				if($autolines[$currentautoline][1]>0&&$autolines[$currentautoline][1]+$wordlength>137) {
+					$currentautoline++;
+					$autolines[$currentautoline]=array('',0);
 				}
+				$autolines[$currentautoline][0].=$word;
+				$autolines[$currentautoline][1]+=$wordlength;
+				$fontforcounting=$fontforward;
+				$i+=$wordnumbytes;
+			}
+			
+			$i=0;
+			$c=count($autolines);
+			while($i<$c) {
+				if(!isset($pages[$pagenum])) {
+					$pages[$pagenum]=array('','');
+					$indicatorsbypage[$pagenum]=false;
+					$linelengthsbypage[$pagenum]=array(0,0);
+					$portraitbypage[$pagenum]='';
+					$errorbypage[$pagenum]=array(false,false);
+				}
+				
+				list($linetext,$linelength)=$autolines[$i];
+				$pages[$pagenum][$linenum]=$linetext;
+				
+				// Check line length (in case a single word is over 137 pixels in width).
+				
+				//$linelengthsbypage[$pagenum][$linenum]=$linelength;
+				if($linelength>137) {
+					$errorbypage[$pagenum][$linenum]=true;
+				}
+				
+				// Parse line breaks.
+				
+				if($i==$c-1) {
+					$linebreaktype=$lines[$currentline][1];
+				} else {
+					$linebreaktype=4;
+				}
+				
+				// Set portrait for page.
+				
+				if(empty($portraitbypage[$pagenum])) {
+					$portraitbypage[$pagenum]=$currentportrait;
+				}
+				
+				// Determine the behaviour of linebreaks.
+				
+				$newpage=false;
+				$discardcode=false;
+				$indicator=false;
+				
+				switch($linebreaktype) {
+					case 4:
+						if($linenum>0) {
+							$indicator=true;
+							$newpage=true;
+						}
+						break;
+					case 3:
+						if($linenum<1&&empty($linetext)) {
+							$discardcode=true;
+						} else {
+							$newpage=true;
+						}
+						break;
+					case 2:
+						$indicator=true;
+						$newpage=true;
+						break;
+					case 1:
+						if($linenum>0) {
+							$discardcode=true;
+							$errorbypage[$pagenum][$linenum]=true;
+						}
+						break;
+				}
+				if(!$discardcode) {
+					if($newpage||$linenum>0) {
+						$indicatorsbypage[$pagenum]=$indicator;
+						$pagenum++;
+						$linenum=0;
+					} else if($linenum<1) {
+						$linenum=1;
+					}
+				}
+				
 				$i++;
 			}
-			
-			// Check if line overflows.
-			
-			if($linelength>137) {
-				$errorbypage[$pagenum][$linenum]=true;
-			}
 		}
-		
-		// Carry over the portrait from the previous page if not set.
-		
-		if(!empty($portraitbypage[$pagenum])) {
-			$currentportrait=$portraitbypage[$pagenum];
-		} else {
-			$portraitbypage[$pagenum]=$currentportrait;
-		}
-		
-		// No indicator on the last page.
-		
-		if($pagenum+1==$numpages) {
-			$indicatorsbypage[$pagenum]=false;
-		}
+		$currentline++;
+	}
+	$numpages=count($pages);
+	$pagenum=0;
+	while($pagenum<$numpages) {
 		
 		// Generate cache filename for later use.
 		
 		$canvascachefilename.=(1+($indicatorsbypage[$pagenum]?1:0)+($errorbypage[$pagenum][0]?2:0)+($errorbypage[$pagenum][1]?4:0));
-		
 		$pagenum++;
 	}
 	

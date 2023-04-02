@@ -158,4 +158,40 @@ function reenc_special_chars($linetext) {
 	$linetext=str_replace($heart,$heartfinal,$linetext);
 	return $linetext;
 }
+function count_to_next_space(&$linetext,&$charwidthtable,&$fontsloaded,$baseindex=0,$c=0,$fontforcounting=0) {
+	$i=$baseindex;
+	$word='';
+	$wordlength=0;
+	$wordnumbytes=0;
+	while($i<$c) {
+		$char=$linetext[$i];
+		$charcode=ord($char);
+		if($charcode==0x20&&$i>$baseindex) {
+			// Stop counting at end of word.
+			
+			$i=$c;
+		} else if($charcode<0x80) {
+			// Add to pixel length total.
+			
+			$wordlength+=$charwidthtable[$fontforcounting][$charcode]+1;
+			
+			$word.=$char;
+			$wordnumbytes++;
+		} else {
+			// A font switching single byte placeholder was encountered.
+			// Switch font tables and note that the font file needs to be loaded.
+			
+			$fontforcounting=$charcode-0x80;
+			if($fontforcounting>=$numberoffonts||$fontforcounting<0) {
+				$fontforcounting=0;
+			}
+			$fontsloaded[$fontforcounting]=true;
+			
+			$word.=$char;
+			$wordnumbytes++;
+		}
+		$i++;
+	}
+	return array($word,$wordlength,$wordnumbytes,$fontforcounting);
+}
 ?>
