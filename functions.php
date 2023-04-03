@@ -161,15 +161,26 @@ function reenc_special_chars($linetext) {
 function count_to_next_space(&$linetext,&$charwidthtable,&$fontsloaded,$baseindex=0,$c=0,$fontforcounting=0,$numberoffonts=0) {
 	$i=$baseindex;
 	$word='';
+	$wordprefix='';
 	$wordlength=0;
+	$wordprefixlength=0;
 	$wordnumbytes=0;
+	$wordprefixnumbytes=0;
 	while($i<$c) {
 		$char=$linetext[$i];
 		$charcode=ord($char);
-		if($charcode==0x20&&$i>$baseindex) {
-			// Stop counting at end of word.
-			
-			$i=$c;
+		if($charcode==0x20) {
+			if($i>$baseindex) {
+				// Stop counting at end of word.
+				
+				$i=$c;
+			} else {
+				// Separate out initial space 
+				
+				$wordprefixlength+=$charwidthtable[$fontforcounting][$charcode]+1;
+				$wordprefix.=$char;
+				$wordnumbytes++;
+			}
 		} else if($charcode<0x80) {
 			// Add to pixel length total.
 			
@@ -192,6 +203,6 @@ function count_to_next_space(&$linetext,&$charwidthtable,&$fontsloaded,$baseinde
 		}
 		$i++;
 	}
-	return array($word,$wordlength,$wordnumbytes,$fontforcounting);
+	return array($word,$wordprefix,$wordlength,$wordprefixlength,$wordnumbytes,$fontforcounting);
 }
 ?>
