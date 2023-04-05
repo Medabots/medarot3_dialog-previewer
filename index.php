@@ -104,12 +104,6 @@ if(!file_exists($globalcachefilename)) {
 	$fontsloaded[$font]=true;
 	$fontforcounting=$font;
 	
-	// Set default portrait.
-	
-	$portrait='CC,FF,FF';
-	$portraitbypage[0]=$portrait;
-	$currentportrait=$portrait;
-	
 	// Parse lines.
 	
 	$canvascachefilename='';
@@ -123,6 +117,12 @@ if(!file_exists($globalcachefilename)) {
 	$errorbypage=array(array(false,false));
 	$linestart=0;
 	$currentpage=0;
+	
+	// Set default portrait.
+	
+	$portrait='CC,FF,FF';
+	$portraitbypage[0]=$portrait;
+	$currentportrait=$portrait;
 	
 	$numlines=count($lines);
 	$currentline=0;
@@ -221,7 +221,7 @@ if(!file_exists($globalcachefilename)) {
 			$c=strlen($linetext);
 			while($i<$c) {
 				list($word,$wordprefix,$wordlength,$wordprefixlength,$wordnumbytes,$fontforward)=count_to_next_space($linetext,$charwidthtable,$fontsloaded,$i,$c,$fontforcounting,$numberoffonts);
-				if($autolines[$currentautoline][1]>0&&$autolines[$currentautoline][1]+$wordlength>137) {
+				if($autolines[$currentautoline][1]>0&&$autolines[$currentautoline][1]+$wordprefixlength+$wordlength>137) {
 					$currentautoline++;
 					$autolines[$currentautoline]=array('',0);
 				} else {
@@ -241,7 +241,6 @@ if(!file_exists($globalcachefilename)) {
 					$pages[$pagenum]=array('','');
 					$indicatorsbypage[$pagenum]=false;
 					$linelengthsbypage[$pagenum]=array(0,0);
-					$portraitbypage[$pagenum]='';
 					$errorbypage[$pagenum]=array(false,false);
 				}
 				
@@ -250,7 +249,6 @@ if(!file_exists($globalcachefilename)) {
 				
 				// Check line length (in case a single word is over 137 pixels in width).
 				
-				//$linelengthsbypage[$pagenum][$linenum]=$linelength;
 				if($linelength>137) {
 					$errorbypage[$pagenum][$linenum]=true;
 				}
@@ -265,9 +263,7 @@ if(!file_exists($globalcachefilename)) {
 				
 				// Set portrait for page.
 				
-				if(empty($portraitbypage[$pagenum])) {
-					$portraitbypage[$pagenum]=$currentportrait;
-				}
+				$portraitbypage[$pagenum]=$currentportrait;
 				
 				// Determine the behaviour of linebreaks.
 				
