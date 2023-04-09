@@ -461,36 +461,295 @@ if(!file_exists($globalcachefilename)) {
 				$orientation='cc';
 		}
 		
+		// Convert character names to character indices.
+		
+		switch($portraitcharacter) {
+			case 'Ikki':
+				$portraitcharacter='00';
+				break;
+			case 'Erika':
+				$portraitcharacter='01';
+				break;
+			case 'Karin':
+				$portraitcharacter='02';
+				break;
+			case 'Koji':
+				$portraitcharacter='03';
+				break;
+			case 'Salty':
+				$portraitcharacter='04';
+				break;
+			case 'Samantha':
+				$portraitcharacter='05';
+				break;
+			case 'Spyke':
+				$portraitcharacter='06';
+				break;
+			case 'Sloan':
+				$portraitcharacter='07';
+				break;
+			case 'Hachiro':
+				$portraitcharacter='08';
+				break;
+			case 'Butter':
+				$portraitcharacter='09';
+				break;
+			case 'Milky':
+				$portraitcharacter='0A';
+				break;
+			case 'PhantomRenegade':
+				$portraitcharacter='0B';
+				break;
+			case 'Henry':
+				$portraitcharacter='0C';
+				break;
+			case 'LadyRenegade':
+				$portraitcharacter='0D';
+				break;
+			case 'Kirara':
+				$portraitcharacter='0E';
+				break;
+			case 'DrAki':
+				$portraitcharacter='0F';
+				break;
+			case 'Nae':
+				$portraitcharacter='10';
+				break;
+			case 'ScientistMale':
+				$portraitcharacter='11';
+				break;
+			case 'ScientistFemale':
+				$portraitcharacter='12';
+				break;
+			case 'Boy':
+				$portraitcharacter='13';
+				break;
+			case 'Man':
+				$portraitcharacter='14';
+				break;
+			case 'Lady':
+				$portraitcharacter='15';
+				break;
+			case 'OldMan':
+				$portraitcharacter='16';
+				break;
+			case 'OldLady':
+				$portraitcharacter='17';
+				break;
+			case 'ScientistMale2':
+				$portraitcharacter='18';
+				break;
+			case 'Man2':
+				$portraitcharacter='19';
+				break;
+			case 'Sailor':
+				$portraitcharacter='1A';
+				break;
+			case 'Girl':
+				$portraitcharacter='1B';
+				break;
+			case 'Gyaru':
+				$portraitcharacter='1C';
+				break;
+			case 'Lady2':
+				$portraitcharacter='1D';
+				break;
+			case 'Clerk':
+				$portraitcharacter='1E';
+				break;
+			case 'BunnyGirl':
+				$portraitcharacter='1F';
+				break;
+			case 'Ninja':
+				$portraitcharacter='20';
+				break;
+			case 'RubberRoboGrunt':
+				$portraitcharacter='21';
+				break;
+			case 'Seaslug':
+				$portraitcharacter='22';
+				break;
+			case 'Gillgirl':
+				$portraitcharacter='23';
+				break;
+			case 'Squidguts':
+				$portraitcharacter='24';
+				break;
+			case 'Shrimplips':
+				$portraitcharacter='25';
+				break;
+			case 'DrArmond':
+				$portraitcharacter='26';
+				break;
+			case 'Unused':
+				$portraitcharacter='27';
+				break;
+			case 'SelectCorpsGrunt':
+				$portraitcharacter='28';
+				break;
+			case 'Tokkuri':
+				$portraitcharacter='29';
+				break;
+			case 'Mystery':
+				$portraitcharacter='2A';
+				break;
+			case 'Unused2':
+				$portraitcharacter='2B';
+				break;
+			case 'MrReferee':
+				$portraitcharacter='2C';
+				break;
+			case 'FlyingMedabot':
+				$portraitcharacter='2D';
+				break;
+			case 'FloatingMedabot':
+				$portraitcharacter='2E';
+				break;
+			case 'MultiLeggedMedabot':
+				$portraitcharacter='2F';
+				break;
+			case 'BipedMedabot':
+				$portraitcharacter='30';
+				break;
+			case 'WheeledMedabot':
+				$portraitcharacter='31';
+				break;
+			case 'TankMedabot':
+				$portraitcharacter='32';
+				break;
+			case 'SwimmingMedabot':
+				$portraitcharacter='33';
+				break;
+			case 'FemaleMedabot':
+				$portraitcharacter='34';
+				break;
+			case 'Metabee':
+				$portraitcharacter='35';
+				break;
+			case 'Rokusho':
+				$portraitcharacter='36';
+				break;
+			case 'Mascot':
+				$portraitcharacter='37';
+				break;
+			case 'Brass':
+				$portraitcharacter='38';
+				break;
+			case 'ScienceMedabot':
+				$portraitcharacter='39';
+				break;
+			case 'Subaru':
+				$portraitcharacter='3A';
+				break;
+			case 'BlackDevil':
+				$portraitcharacter='3B';
+				break;
+			case 'Marbler':
+				$portraitcharacter='3C';
+				break;
+			case 'Topazia':
+				$portraitcharacter='3D';
+				break;
+			case 'Ceruleano':
+				$portraitcharacter='3E';
+				break;
+			case 'Kai':
+				$portraitcharacter='3F';
+				break;
+			case 'Viridiana':
+				$portraitcharacter='40';
+				break;
+			case 'Electra':
+				$portraitcharacter='41';
+				break;
+			case 'OldSmiley':
+				$portraitcharacter='42';
+				break;
+			case 'ScientistMale3':
+				$portraitcharacter='43';
+				break;
+			case 'Asama':
+				$portraitcharacter='44';
+				break;
+			case 'Seseri':
+				$portraitcharacter='45';
+				break;
+			case 'Crow':
+				$portraitcharacter='46';
+				break;
+			case 'Boy2':
+				$portraitcharacter='47';
+				break;
+			case 'ProbablyHasANameBoy':
+				$portraitcharacter='48';
+				break;
+			case 'LittleGirl':
+				$portraitcharacter='49';
+				break;
+			case 'Girl2':
+				$portraitcharacter='4A';
+				break;
+			case 'Boy3':
+				$portraitcharacter='4B';
+				break;
+			case 'Man3':
+				$portraitcharacter='4C';
+				break;
+			case 'Lady3':
+				$portraitcharacter='4D';
+				break;
+			case 'Alien':
+				$portraitcharacter='4E';
+				break;
+			case 'Rintarou':
+				$portraitcharacter='4F';
+				break;
+		}
+		
 		// Parse character index.
 		// There are 80 characters. The 81st is for characters specified outside that range.
 		
-		$portraitcharacter=preg_replace('/[^0-9a-f]/','',strtolower($portraitcharacter));
-		if(empty($portraitcharacter)) {
-			$portraitcharacter=0;
-		} else {
-			$portraitcharacter=substr($portraitcharacter,-2);
-			$portraitcharacter=hexdec($portraitcharacter);
-		}
-		$portraitcharacter=$portraitcharacter%256;
+		$portraitcharactercomp=strtolower($portraitcharacter);
+		$portraitcharacter=preg_replace('/[^0-9a-f]/','',$portraitcharactercomp);
 		
-		if($portraitcharacter>80) {
+		// Reject invalid hex values or anything out of range.
+		
+		if($portraitcharactercomp!==$portraitcharacter||strlen($portraitcharacter)>2) {
 			$portraitcharacter=80;
+		} else {
+			if(empty($portraitcharacter)) {
+				$portraitcharacter=0;
+			} else {
+				$portraitcharacter=hexdec($portraitcharacter);
+			}
+			if($portraitcharacter>80) {
+				$portraitcharacter=80;
+			}
 		}
 		
 		// Parse expression index.
 		// Each character is expected to have exactly 64 expressions. No more, no less. 
 		
-		$portraitexpression=preg_replace('/[^0-9a-f]/','',strtolower($portraitexpression));
-		if(empty($portraitexpression)) {
+		$portraitexpressioncomp=strtolower($portraitexpression);
+		$portraitexpression=preg_replace('/[^0-9a-f]/','',strtolower($portraitexpressioncomp));
+		
+		// Reject invalid hex values or anything out of range by changing the character index to 80.
+		
+		if($portraitexpressioncomp!==$portraitexpression||strlen($portraitexpression)>2) {
+			$portraitcharacter=80;
 			$portraitexpression=0;
 		} else {
-			$portraitexpression=substr($portraitexpression,-2);
-			$portraitexpression=hexdec($portraitexpression);
-		}
-		$portraitexpression=$portraitexpression%256;
-		
-		if($portraitexpression>63) {
-			$portraitexpression=63;
+			if(empty($portraitexpression)) {
+				$portraitexpression=0;
+			} else {
+				$portraitexpression=substr($portraitexpression,-2);
+				$portraitexpression=hexdec($portraitexpression);
+			}
+			$portraitexpression=$portraitexpression%256;
+			
+			if($portraitexpression>63) {
+				$portraitexpression=63;
+			}
 		}
 		
 		// Set basic size and positioning variables.
