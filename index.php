@@ -169,11 +169,29 @@ if(!file_exists($globalcachefilename)) {
 			
 			// Replace subtext with character $01 repeated 8 times.
 			
-			$placeholder=chr(0x01);
+			$placeholderchar=chr(0x01);
+			$placeholder=$placeholderchar;
 			$placeholder.=$placeholder;
 			$placeholder.=$placeholder;
 			$placeholder.=$placeholder;
 			$linetext=preg_replace('/\<\&[0-9A-Za-z\_\-]+\>/',$placeholder,$linetext);
+			
+			// Replace vowel extender with character $01 repeated 8+ext times.
+			
+			$matches=array();
+			while(preg_match('/\<\~[0-9A-Za-z\_\-]+\,[0-9]+\>/',$linetext,$matches,PREG_OFFSET_CAPTURE)) {
+				$match=$matches[0][0];
+				$pos=intval($matches[0][1],10);
+				$len=strlen($match);
+				$i=explode(',',$match);
+				$i=intval($i[1],10)&7;
+				while($i>0) {
+					$placeholder.=$placeholderchar;
+					$i--;
+				}
+				$linetext=substr($linetext,0,$pos).$placeholder.substr($linetext,$pos+$len);
+				$matches=array();
+			}
 			
 			// Process all portrait codes.
 			
