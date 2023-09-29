@@ -174,6 +174,7 @@ if(!file_exists($globalcachefilename)) {
 			$placeholder.=$placeholder;
 			$placeholder.=$placeholder;
 			$placeholder.=$placeholder;
+			$placeholderbase=$placeholder;
 			$linetext=preg_replace('/\<\&[0-9A-Za-z\_\-]+\>/',$placeholder,$linetext);
 			
 			// Replace vowel extender with character $01 repeated 8+ext times.
@@ -185,6 +186,7 @@ if(!file_exists($globalcachefilename)) {
 				$len=strlen($match);
 				$i=explode(',',$match);
 				$i=intval($i[1],10)&7;
+				$placeholder=$placeholderbase;
 				while($i>0) {
 					$placeholder.=$placeholderchar;
 					$i--;
