@@ -167,7 +167,7 @@ if(empty($text)) {
 	}
 	header('X-Content-Type-Options: nosniff');
 	imagesavealpha($im,false);
-	imagetruecolortopalette($im,false,2);
+	//imagetruecolortopalette($im,false,2);
 	//imagecolortransparent($im,imagecolorat($im,$canvaswidth-1,0));
 	imagepng($im,null,7);
 	imagedestroy($im);
