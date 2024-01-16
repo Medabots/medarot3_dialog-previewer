@@ -241,7 +241,7 @@ if(!file_exists($globalcachefilename)) {
 			$c=strlen($linetext);
 			while($i<$c) {
 				list($word,$wordprefix,$wordlength,$wordprefixlength,$wordnumbytes,$fontforward)=count_to_next_space($linetext,$charwidthtable,$fontsloaded,$i,$c,$fontforcounting,$numberoffonts);
-				if($autolines[$currentautoline][1]>0&&$autolines[$currentautoline][1]+$wordprefixlength+$wordlength>137) {
+				if($autolines[$currentautoline][1]>0&&$autolines[$currentautoline][1]+$wordprefixlength+$wordlength>136) {
 					$currentautoline++;
 					$autolines[$currentautoline]=array('',0);
 				} else {
@@ -267,9 +267,9 @@ if(!file_exists($globalcachefilename)) {
 				list($linetext,$linelength)=$autolines[$i];
 				$pages[$pagenum][$linenum]=$linetext;
 				
-				// Check line length (in case a single word is over 137 pixels in width).
+				// Check line length (in case a single word is over 136 pixels in width).
 				
-				if($linelength>137) {
+				if($linelength>136) {
 					$errorbypage[$pagenum][$linenum]=true;
 				}
 				
