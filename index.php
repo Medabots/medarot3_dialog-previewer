@@ -535,10 +535,10 @@ if(!file_exists($globalcachefilename)) {
 			case 'Nae':
 				$portraitcharacter='10';
 				break;
-			case 'ScientistMale':
+			case 'IkkiDad':
 				$portraitcharacter='11';
 				break;
-			case 'ScientistFemale':
+			case 'IkkiMom':
 				$portraitcharacter='12';
 				break;
 			case 'Boy':
@@ -556,7 +556,7 @@ if(!file_exists($globalcachefilename)) {
 			case 'OldLady':
 				$portraitcharacter='17';
 				break;
-			case 'ScientistMale2':
+			case 'ScientistMale':
 				$portraitcharacter='18';
 				break;
 			case 'Man2':
@@ -685,7 +685,7 @@ if(!file_exists($globalcachefilename)) {
 			case 'OldSmiley':
 				$portraitcharacter='42';
 				break;
-			case 'ScientistMale3':
+			case 'OfficeWorker':
 				$portraitcharacter='43';
 				break;
 			case 'Asama':
@@ -721,7 +721,7 @@ if(!file_exists($globalcachefilename)) {
 			case 'Alien':
 				$portraitcharacter='4E';
 				break;
-			case 'Rintarou':
+			case 'Rintaro':
 				$portraitcharacter='4F';
 				break;
 		}
